@@ -1,0 +1,14 @@
+[project]
+name = "deepseek-opt"
+version = "0.1.0"
+description = "CUDA Optimizations for DeepSeek-V2-Lite"
+dependencies = [
+    "torch>=2.1.0",
+    "numpy",
+    "pytest",
+    "einops",
+    "transformers",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
