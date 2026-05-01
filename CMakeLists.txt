@@ -31,9 +31,13 @@ include_directories(
     ${Python3_INCLUDE_DIRS}
 )
 
-# Shared library for custom kernels
+# Shared library for custom kernels.
+# bindings.cu owns the single PYBIND11_MODULE entry point.
+# Each kernel .cu file contains only the kernel + C++ wrapper (no module def).
 add_library(ds_kernels SHARED
     src/kernels/hello.cu
+    src/kernels/moe_routing.cu
+    src/kernels/bindings.cu
 )
 
 # Target properties

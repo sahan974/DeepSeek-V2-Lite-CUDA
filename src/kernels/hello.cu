@@ -1,8 +1,13 @@
+/**
+ * @file hello.cu
+ * @brief CUDA toolchain verification kernel.
+ */
 #include <cuda_runtime.h>
 #include <iostream>
-#include <torch/extension.h>
 
-// A simple kernel to verify the setup
+/**
+ * @brief Simple kernel to verify CUDA execution.
+ */
 __global__ void hello_kernel() {
     int tid = blockIdx.x * blockDim.x + threadIdx.x;
     if (tid == 0) {
@@ -10,13 +15,8 @@ __global__ void hello_kernel() {
     }
 }
 
-// C++ wrapper for PyTorch FFI
+// C++ wrapper — called from Python via the binding in bindings.cu.
 void run_hello() {
     hello_kernel<<<1, 32>>>();
     cudaDeviceSynchronize();
-}
-
-// Bind the kernel to PyTorch
-PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
-    m.def("run_hello", &run_hello, "Run the hello world CUDA kernel");
 }
