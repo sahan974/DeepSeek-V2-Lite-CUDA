@@ -21,10 +21,16 @@ import sys
 import os
 import math
 
+# torch must be imported before ds_kernels. Additionally, torch._C must be
+# reloaded with RTLD_GLOBAL so that its PyBind11 type_caster symbols (e.g.,
+# type_caster<at::Tensor>) are visible to the dynamic linker when ds_kernels.so
+# is subsequently loaded. Without RTLD_GLOBAL, Python loads C extensions with
+# RTLD_LOCAL by default, making their symbols invisible to other extensions.
+import ctypes
 import torch
 import torch.nn.functional as F
+ctypes.CDLL(torch._C.__file__, ctypes.RTLD_GLOBAL)
 
-# ── Path setup ────────────────────────────────────────────────────────────────
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, os.path.join(ROOT, "src"))
 sys.path.insert(0, os.path.join(ROOT, "build"))

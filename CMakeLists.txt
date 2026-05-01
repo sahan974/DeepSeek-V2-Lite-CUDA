@@ -37,13 +37,19 @@ include_directories(
 add_library(ds_kernels SHARED
     src/kernels/hello.cu
     src/kernels/moe_routing.cu
+    src/kernels/moe_scan.cu
     src/kernels/bindings.cu
 )
 
 # Target properties
 set_target_properties(ds_kernels PROPERTIES
+    PREFIX ""
     CUDA_SEPARABLE_COMPILATION ON
 )
+
+# Define the extension name so PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) expands
+# to PyInit_ds_kernels — the symbol Python's import system searches for.
+target_compile_definitions(ds_kernels PRIVATE TORCH_EXTENSION_NAME=ds_kernels)
 
 # Link against Torch
 target_link_libraries(ds_kernels "${TORCH_LIBRARIES}")
