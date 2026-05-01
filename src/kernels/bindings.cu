@@ -28,6 +28,14 @@ std::vector<torch::Tensor> moe_dispatch_forward(
     torch::Tensor expert_offsets
 );
 
+// moe_combine.cu
+torch::Tensor moe_combine_forward(
+    torch::Tensor expert_output,
+    torch::Tensor token_map,
+    torch::Tensor dispatched_weights,
+    int           num_tokens
+);
+
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("run_hello",
           &run_hello,
@@ -66,4 +74,19 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
           "  dispatched         (Tensor): bfloat16 [num_tokens * top_k, hidden_size]\n"
           "  token_map          (Tensor): int32    [num_tokens * top_k]\n"
           "  dispatched_weights (Tensor): float32  [num_tokens * top_k]");
+
+    m.def("moe_combine",
+          &moe_combine_forward,
+          "Accumulates weighted expert outputs back to token-ordered positions.\n"
+          "Args:\n"
+          "  expert_output      (Tensor): bfloat16 CUDA tensor [total_slots, hidden_size]\n"
+          "  token_map          (Tensor): int32    CUDA tensor [total_slots]\n"
+          "  dispatched_weights (Tensor): float32  CUDA tensor [total_slots]\n"
+          "  num_tokens         (int):    number of original tokens\n"
+          "Returns:\n"
+          "  final_output (Tensor): bfloat16 [num_tokens, hidden_size]",
+          py::arg("expert_output"),
+          py::arg("token_map"),
+          py::arg("dispatched_weights"),
+          py::arg("num_tokens"));
 }
