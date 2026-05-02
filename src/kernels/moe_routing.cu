@@ -75,18 +75,22 @@ __global__ void moe_routing_kernel(
     const int lane_id     = threadIdx.x % WARP_SIZE;
     const int token_id    = blockIdx.x * WARPS_PER_BLOCK + warp_id;
 
-    if (token_id >= num_tokens) return;
-
     // Shared memory layout: [WARPS_PER_BLOCK][MAX_EXPERTS].
     // Each warp targets a private row to eliminate intra-block atomic contention.
     extern __shared__ int expert_counts_smem[];
     int* my_counts = expert_counts_smem + warp_id * MAX_EXPERTS;
-    
+
     // Initialize shared memory expert bins via strided parallel access.
+    // IMPORTANT: ALL warps must zero their rows before the early-return guard,
+    // because the block-level reduction (warp_id==0) sums ALL rows including
+    // those belonging to out-of-range warps. Returning early without zeroing
+    // would leave garbage in those rows and cause overcounting.
     for (int e = lane_id; e < MAX_EXPERTS; e += WARP_SIZE) {
         my_counts[e] = 0;
     }
     __syncwarp();
+
+    if (token_id >= num_tokens) return;
 
     // Softmax Pass 1: Global Maximum Identification for numerical stability.
     // With 64 experts and 32 threads, each lane processes 2 experts.
