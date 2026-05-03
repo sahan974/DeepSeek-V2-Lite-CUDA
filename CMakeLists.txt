@@ -36,10 +36,10 @@ include_directories(
 # Each kernel .cu file contains only the kernel + C++ wrapper (no module def).
 add_library(ds_kernels SHARED
     src/kernels/hello.cu
-    src/kernels/moe_routing.cu
-    src/kernels/moe_scan.cu
-    src/kernels/moe_dispatch.cu
-    src/kernels/moe_combine.cu
+    src/kernels/moe/routing.cu
+    src/kernels/moe/scan.cu
+    src/kernels/moe/dispatch.cu
+    src/kernels/moe/combine.cu
     src/kernels/bindings.cu
 )
 

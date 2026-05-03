@@ -35,7 +35,7 @@
 #include <torch/extension.h>
 #include <vector>
 #include <stdexcept>
-#include "moe_dispatch.h"
+#include "moe/dispatch.h"
 
 static constexpr int DISPATCH_THREADS = 256;
 static constexpr int BF16_PER_UINT4   = 8;   // 1 uint4 = 16 bytes = 8 BF16 values.

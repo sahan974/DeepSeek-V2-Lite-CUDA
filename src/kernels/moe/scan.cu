@@ -21,7 +21,7 @@
 #include <torch/extension.h>
 #include <vector>
 #include <stdexcept>
-#include "moe_scan.h"
+#include "moe/scan.h"
 
 /**
  * @brief Internal host-side launcher for the CUB exclusive prefix sum.

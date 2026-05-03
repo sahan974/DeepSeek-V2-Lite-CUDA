@@ -25,7 +25,7 @@
 #include <torch/extension.h>
 #include <vector>
 #include <stdexcept>
-#include "moe_combine.h"
+#include "moe/combine.h"
 
 static constexpr int COMBINE_THREADS = 256;
 

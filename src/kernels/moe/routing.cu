@@ -25,7 +25,7 @@
 #include <torch/extension.h>
 #include <vector>
 #include <stdexcept>
-#include "moe_routing.h"
+#include "moe/routing.h"
 
 static constexpr int WARP_SIZE       = 32;
 static constexpr int WARPS_PER_BLOCK = 4;   // Processes 4 tokens per thread block.
