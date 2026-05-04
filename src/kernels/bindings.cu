@@ -39,6 +39,13 @@ torch::Tensor moe_combine_forward(
 // moe/swiglu.cu
 torch::Tensor swiglu_forward(torch::Tensor input);
 
+// moe/gemm1.cu
+torch::Tensor moe_gemm1_forward(
+    torch::Tensor dispatched,
+    torch::Tensor packed_w1,
+    torch::Tensor expert_offsets
+);
+
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("run_hello",
           &run_hello,
@@ -100,4 +107,14 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
           "  input (Tensor): bfloat16 CUDA tensor [total_tokens, 2*intermediate_size]\n"
           "Returns:\n"
           "  output (Tensor): bfloat16 CUDA tensor [total_tokens, intermediate_size]");
+
+    m.def("moe_gemm1",
+          &moe_gemm1_forward,
+          "Batched gate+up projection for all active experts via cuBLAS.\n"
+          "Args:\n"
+          "  dispatched     (Tensor): bfloat16 CUDA [total_slots, hidden_size]\n"
+          "  packed_w1      (Tensor): bfloat16 CUDA [num_experts, 2*intermediate, hidden]\n"
+          "  expert_offsets (Tensor): int32    CUDA [num_experts + 1]\n"
+          "Returns:\n"
+          "  gemm1_out (Tensor): bfloat16 CUDA [total_slots, 2*intermediate_size]");
 }

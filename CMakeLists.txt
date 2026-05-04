@@ -41,6 +41,7 @@ add_library(ds_kernels SHARED
     src/kernels/moe/dispatch.cu
     src/kernels/moe/combine.cu
     src/kernels/moe/swiglu.cu
+    src/kernels/moe/gemm1.cu
     src/kernels/bindings.cu
 )
 
@@ -54,8 +55,8 @@ set_target_properties(ds_kernels PROPERTIES
 # to PyInit_ds_kernels — the symbol Python's import system searches for.
 target_compile_definitions(ds_kernels PRIVATE TORCH_EXTENSION_NAME=ds_kernels)
 
-# Link against Torch
-target_link_libraries(ds_kernels "${TORCH_LIBRARIES}")
+# Link against Torch and cuBLAS
+target_link_libraries(ds_kernels "${TORCH_LIBRARIES}" cublas)
 
 # Target installation configuration
 install(TARGETS ds_kernels DESTINATION lib)
