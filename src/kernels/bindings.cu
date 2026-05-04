@@ -28,13 +28,16 @@ std::vector<torch::Tensor> moe_dispatch_forward(
     torch::Tensor expert_offsets
 );
 
-// moe_combine.cu
+// moe/combine.cu
 torch::Tensor moe_combine_forward(
     torch::Tensor expert_output,
     torch::Tensor token_map,
     torch::Tensor dispatched_weights,
     int           num_tokens
 );
+
+// moe/swiglu.cu
+torch::Tensor swiglu_forward(torch::Tensor input);
 
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("run_hello",
@@ -89,4 +92,12 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
           py::arg("token_map"),
           py::arg("dispatched_weights"),
           py::arg("num_tokens"));
+
+    m.def("swiglu",
+          &swiglu_forward,
+          "SwiGLU activation: silu(gate_half) * up_half.\n"
+          "Args:\n"
+          "  input (Tensor): bfloat16 CUDA tensor [total_tokens, 2*intermediate_size]\n"
+          "Returns:\n"
+          "  output (Tensor): bfloat16 CUDA tensor [total_tokens, intermediate_size]");
 }

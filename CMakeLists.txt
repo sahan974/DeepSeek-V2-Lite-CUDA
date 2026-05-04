@@ -40,6 +40,7 @@ add_library(ds_kernels SHARED
     src/kernels/moe/scan.cu
     src/kernels/moe/dispatch.cu
     src/kernels/moe/combine.cu
+    src/kernels/moe/swiglu.cu
     src/kernels/bindings.cu
 )
 

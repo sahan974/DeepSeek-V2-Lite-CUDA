@@ -20,6 +20,7 @@ venv/
 # IDEs
 .idea/
 .vscode/
+cmake-build-debug/
 *.swp
 *.swo
 
