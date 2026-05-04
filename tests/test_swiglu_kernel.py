@@ -5,10 +5,6 @@ Unit test for the SwiGLU CUDA kernel (moe/swiglu.cu).
 
 Verifies that ds_kernels.swiglu(input) produces results matching the
 reference PyTorch implementation within the expected BF16 tolerance.
-
-Run on Vast.ai GPU instance:
-    export PYTHONPATH=$PYTHONPATH:$(pwd)/build
-    python3 tests/test_swiglu_kernel.py
 """
 
 import sys

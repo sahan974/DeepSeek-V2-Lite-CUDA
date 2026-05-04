@@ -42,6 +42,7 @@ add_library(ds_kernels SHARED
     src/kernels/moe/combine.cu
     src/kernels/moe/swiglu.cu
     src/kernels/moe/gemm1.cu
+    src/kernels/moe/gemm2.cu
     src/kernels/bindings.cu
 )
 
