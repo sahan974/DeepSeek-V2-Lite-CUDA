@@ -44,6 +44,7 @@ add_library(ds_kernels SHARED
     src/kernels/moe/gemm1.cu
     src/kernels/moe/gemm2.cu
     src/kernels/mla/rms_norm.cu
+    src/kernels/mla/kv_upproj.cu
     src/kernels/bindings.cu
 )
 

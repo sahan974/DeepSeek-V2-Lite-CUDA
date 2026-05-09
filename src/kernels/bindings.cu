@@ -60,6 +60,12 @@ torch::Tensor rms_norm_forward(
     double        eps
 );
 
+// mla/kv_upproj.cu
+torch::Tensor kv_upproj_forward(
+    torch::Tensor normed_kv,
+    torch::Tensor weight
+);
+
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("run_hello",
           &run_hello,
@@ -154,4 +160,13 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
           py::arg("input"),
           py::arg("weight"),
           py::arg("eps") = 1e-6);
+
+    m.def("kv_upproj",
+          &kv_upproj_forward,
+          "KV up-projection: normed_kv @ kv_b_proj.weight.T via cuBLAS.\n"
+          "Args:\n"
+          "  normed_kv (Tensor): bfloat16 CUDA tensor [..., kv_lora_rank]\n"
+          "  weight    (Tensor): bfloat16 CUDA tensor [out_dim, kv_lora_rank]\n"
+          "Returns:\n"
+          "  kv_up (Tensor): bfloat16 CUDA tensor [..., out_dim]");
 }
