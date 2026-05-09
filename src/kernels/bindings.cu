@@ -53,6 +53,13 @@ torch::Tensor moe_gemm2_forward(
     torch::Tensor expert_offsets
 );
 
+// mla/rms_norm.cu
+torch::Tensor rms_norm_forward(
+    torch::Tensor input,
+    torch::Tensor weight,
+    double        eps
+);
+
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("run_hello",
           &run_hello,
@@ -134,4 +141,17 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
           "  expert_offsets (Tensor): int32    CUDA [num_experts + 1]\n"
           "Returns:\n"
           "  gemm2_out (Tensor): bfloat16 CUDA [total_slots, hidden_size]");
+
+    m.def("rms_norm",
+          &rms_norm_forward,
+          "RMSNorm over the last dimension of a BF16 tensor.\n"
+          "Args:\n"
+          "  input  (Tensor): bfloat16 CUDA tensor [..., hidden_size]\n"
+          "  weight (Tensor): float32  CUDA tensor [hidden_size]\n"
+          "  eps    (float):  variance epsilon (default 1e-6)\n"
+          "Returns:\n"
+          "  output (Tensor): bfloat16 CUDA tensor [..., hidden_size]",
+          py::arg("input"),
+          py::arg("weight"),
+          py::arg("eps") = 1e-6);
 }
