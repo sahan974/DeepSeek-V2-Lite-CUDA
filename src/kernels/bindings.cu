@@ -66,6 +66,14 @@ torch::Tensor kv_upproj_forward(
     torch::Tensor weight
 );
 
+// mla/rope.cu
+std::vector<torch::Tensor> rope_forward(
+    torch::Tensor q_pe,
+    torch::Tensor k_pe,
+    torch::Tensor cos,
+    torch::Tensor sin
+);
+
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("run_hello",
           &run_hello,
@@ -169,4 +177,16 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
           "  weight    (Tensor): bfloat16 CUDA tensor [out_dim, kv_lora_rank]\n"
           "Returns:\n"
           "  kv_up (Tensor): bfloat16 CUDA tensor [..., out_dim]");
+
+    m.def("rope",
+          &rope_forward,
+          "YaRN RoPE applied to q_pe and k_pe.\n"
+          "Combines interleave-to-non-interleave transform with rotation.\n"
+          "Args:\n"
+          "  q_pe (Tensor): bfloat16 CUDA [bsz, heads, seq, rope_dim]\n"
+          "  k_pe (Tensor): bfloat16 CUDA [bsz, 1, seq, rope_dim]\n"
+          "  cos  (Tensor): bfloat16 CUDA [bsz, 1, seq, rope_dim]  (pre-indexed)\n"
+          "  sin  (Tensor): bfloat16 CUDA [bsz, 1, seq, rope_dim]  (pre-indexed)\n"
+          "Returns:\n"
+          "  [q_pe_rotated, k_pe_rotated]  same shapes as inputs");
 }
